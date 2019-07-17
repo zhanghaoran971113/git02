@@ -15,6 +15,7 @@
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -32,14 +33,15 @@
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
-                    <div class="col-sm-10">
+                    
+                    <div class="col-sm-10"><img src="" alt="" style="width: 50px">
                         <input type="file" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control art-type">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -79,7 +81,30 @@
             </form>
         </div>
     </div>
-
+    <script type="text/html" id="tmop">
+        {{each}}
+        <option value="{{$value.id}}">{{$value.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        $(function(){
+            //files更改预览图片
+            $("#exampleInputFile").change(function(){
+                var url=URL.createObjectURL($("#exampleInputFile")[0].files[0]);
+                $("#exampleInputFile").prev().attr("src",url);
+            });
+            //初始化分类下拉框
+            $.get({
+                url: "http://localhost:8000/admin/category_search",
+                success: function (res) {
+                    if (res.code == 200) {
+                        var tmop = template("tmop", res.data);
+                        $(".art-type").html(tmop);
+                    }
+                }
+            });
+        })
+    </script>
 </body>
 
 </html>
